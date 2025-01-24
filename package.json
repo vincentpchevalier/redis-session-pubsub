@@ -1,0 +1,26 @@
+{
+	"name": "redis-session-pubsub",
+	"version": "1.0.0",
+	"description": "A simple pub sub manager using express and redis.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vincentpchevalier/redis-session-pubsub.git"
+	},
+	"author": "Vincent Chevalier",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/vincentpchevalier/redis-session-pubsub/issues"
+	},
+	"homepage": "https://github.com/vincentpchevalier/redis-session-pubsub#readme",
+	"dependencies": {
+		"express": "^4.21.2",
+		"morgan": "^1.10.0",
+		"nodemon": "^3.1.9",
+		"redis": "^4.7.0"
+	}
+}
