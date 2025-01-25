@@ -9,3 +9,8 @@ export const sendMessage = async (sessionId, message) => {
 	// get session code/id and message from request
 	// call publish to session
 };
+
+export const endSession = async () => {
+	// call disconnect
+	// send disconnected message to controller
+};
