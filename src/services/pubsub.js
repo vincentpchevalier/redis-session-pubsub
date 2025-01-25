@@ -22,6 +22,7 @@ const init = async () => {
 
 // "private"
 const checkRedisConnection = async () => {
+	console.log('Checking Redis connection...');
 	try {
 		// check if pubClient is open
 		if (!pubClient.isOpen) {
@@ -41,15 +42,23 @@ const checkRedisConnection = async () => {
 };
 
 export const subscribe = async (userId, sessionId) => {
-	checkRedisConnection();
+	await checkRedisConnection();
+
+	await subClient.subscribe(sessionId, (message) => {
+		console.log(`User ${userId} received message: ${message} `);
+	});
 };
 
-export const unsubscribe = async (userId, sessionId) => {
-	checkRedisConnection();
+export const unsubscribe = async (sessionId) => {
+	await checkRedisConnection();
+
+	await subClient.unsubscribe(sessionId);
 };
 
 export const publish = async (sessionId, message) => {
-	checkRedisConnection();
+	await checkRedisConnection();
+
+	await pubClient.publish(sessionId, JSON.stringify(message));
 };
 
 export const disconnect = async () => {
