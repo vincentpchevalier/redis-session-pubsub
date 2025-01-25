@@ -63,6 +63,17 @@ export const publish = async (sessionId, message) => {
 
 export const disconnect = async () => {
 	console.log('Disconnecting from Redis clients.');
+	// check if pubClient is open
+	if (pubClient.isOpen) {
+		await pubClient.quit();
+	}
+
+	// check if subClient is open
+	if (subClient.isOpen) {
+		await subClient.quit();
+	}
+
+	console.log('Disconnected from Redis.');
 };
 
 export default init;
