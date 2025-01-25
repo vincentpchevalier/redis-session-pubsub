@@ -1,18 +1,16 @@
 import { Router } from 'express';
+import {
+	closeSession,
+	joinSession,
+	message,
+	startSession,
+} from '../controllers/sessionController.js';
 
 const sessionRouter = Router();
 
-sessionRouter.post('/session', (_, res) => {
-	res.send('start session');
-});
-sessionRouter.get('/session/:id', (_, res) => {
-	res.send('join session');
-});
-sessionRouter.post('/session/:id', (_, res) => {
-	res.send('message');
-});
-sessionRouter.delete('/session/:id', (_, res) => {
-	res.send('close session');
-});
+sessionRouter.post('/session', startSession);
+sessionRouter.get('/session/:id', joinSession);
+sessionRouter.post('/session/:id', message);
+sessionRouter.delete('/session/:id', closeSession);
 
 export default sessionRouter;
