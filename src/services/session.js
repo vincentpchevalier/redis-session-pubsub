@@ -14,11 +14,11 @@ export const joinSession = async (sessionId) => {
 	// call subscribe using session id
 };
 
-export const endSession = async () => {
-	// call unsubscribe
-	// send end session message to user
+export const leaveSession = async (sessionId) => {
+	//
 };
 
-export const endAllSessions = async () => {
+export const endSession = async () => {
 	// call disconnect
+	// send end session message to user
 };
