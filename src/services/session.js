@@ -15,7 +15,7 @@ export const joinSession = async (sessionId) => {
 };
 
 export const leaveSession = async (sessionId) => {
-	//
+	// unsubscribe from session (maybe create a PUT route or keep this for ws)
 };
 
 export const endSession = async () => {
