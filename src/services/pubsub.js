@@ -3,7 +3,8 @@ import redis from 'redis';
 let pubClient;
 let subClient;
 
-export const init = async () => {
+const init = async () => {
+	console.log('Connecting to Redis...');
 	pubClient = await redis
 		.createClient({
 			url: process.env.REDIS_URL,
@@ -19,10 +20,20 @@ export const init = async () => {
 		.connect();
 };
 
+// "private"
 const checkRedisConnection = async () => {
 	try {
 		// check if pubClient is open
+		if (!pubClient.isOpen) {
+			console.log('Connecting pub client to Redis...');
+			await pubClient.connect();
+		}
+
 		// check if subClient is open
+		if (!subClient.isOpen) {
+			console.log('Connecting sub client to Redis...');
+			await subClient.connect();
+		}
 	} catch (error) {
 		console.error('Unable to connect to Redis:', error);
 		throw error;
@@ -30,17 +41,19 @@ const checkRedisConnection = async () => {
 };
 
 export const subscribe = async (userId, sessionId) => {
-	// add guard clause to check if connected
+	checkRedisConnection();
 };
 
 export const unsubscribe = async (userId, sessionId) => {
-	// add guard clause to check if connected
+	checkRedisConnection();
 };
 
 export const publish = async (sessionId, message) => {
-	// add guard clause to check if connected
+	checkRedisConnection();
 };
 
 export const disconnect = async () => {
 	console.log('Disconnecting from Redis clients.');
 };
+
+export default init;
