@@ -10,7 +10,15 @@ export const sendMessage = async (sessionId, message) => {
 	// call publish to session
 };
 
+export const joinSession = async (sessionId) => {
+	// call subscribe using session id
+};
+
 export const endSession = async () => {
+	// call unsubscribe
+	// send end session message to user
+};
+
+export const endAllSessions = async () => {
 	// call disconnect
-	// send disconnected message to controller
 };
