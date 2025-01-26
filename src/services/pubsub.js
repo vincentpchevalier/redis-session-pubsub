@@ -50,9 +50,14 @@ export const subscribe = async (userId, sessionId) => {
 };
 
 export const unsubscribe = async (sessionId) => {
-	await checkRedisConnection();
+	try {
+		console.log(`Unsubscribing from session ${sessionId}`);
+		await checkRedisConnection();
 
-	await subClient.unsubscribe(sessionId);
+		await subClient.unsubscribe(sessionId);
+	} catch (error) {
+		console.error(error);
+	}
 };
 
 export const publish = async (sessionId, message) => {
