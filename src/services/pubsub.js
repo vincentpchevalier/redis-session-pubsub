@@ -66,6 +66,7 @@ export const publish = async (sessionId, message) => {
 	await pubClient.publish(sessionId, JSON.stringify(message));
 };
 
+// Disconnects from Redis clients; use unsubscribe instead for now.
 export const disconnect = async () => {
 	console.log('Disconnecting from Redis clients.');
 	// check if pubClient is open
