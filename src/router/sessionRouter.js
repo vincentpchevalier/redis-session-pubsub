@@ -8,9 +8,9 @@ import {
 
 const sessionRouter = Router();
 
-sessionRouter.post('/session', createSession);
-sessionRouter.get('/session/:id', joinSession);
-sessionRouter.post('/session/:id', message);
-sessionRouter.delete('/session/:id', closeSession);
+sessionRouter.post('/', createSession);
+sessionRouter.get('/join', joinSession);
+sessionRouter.post('/message', message);
+sessionRouter.delete('/', closeSession);
 
 export default sessionRouter;

@@ -1,39 +1,42 @@
-import { sendMessage, startSession } from '../services/sessionService.js';
+import * as sessionService from '../services/sessionService.js';
 
 export const createSession = async (req, res) => {
 	try {
-		const newSession = await startSession(req.body.userId);
-		res.status(201).json({ status: 'success', data: { session: newSession } });
+		const { userId } = req.body;
+
+		const code = await sessionService.startSession(userId);
+
+		res.status(201).json({ status: 'success', data: { code } });
 	} catch (err) {
-		res.status(400).json({
-			status: 'fail',
-			message: 'Invalid data sent.',
-		});
+		console.error(err);
 	}
 };
 
 export const joinSession = async (req, res) => {
-	res.status(200).json({ message: `Joined session at ${req.params.id}` });
+	try {
+		const { userId, code } = req.body;
+
+		await sessionService.joinSession(userId, code);
+
+		res.status(200).json({ status: 'joined' });
+	} catch (error) {
+		console.error(err);
+	}
 };
 
 export const message = async (req, res) => {
 	try {
-		const { message } = req.body;
-		const token = req.params.id;
+		const { code, message } = req.body;
 
-		if (!token || !message) {
-			throw new Error('Missing token or message.');
+		if (!code || !message) {
+			throw new Error('Missing code or message.');
 		}
 
-		const response = await sendMessage(token, message);
+		await sessionService.sendMessage(code, message);
 
-		res.status(200).json({ status: 'success', data: { message: response } });
+		res.status(200).json({ status: 'sent' });
 	} catch (err) {
-		console.log(err);
-		res.status(400).json({
-			status: 'fail',
-			message: 'Invalid data sent.',
-		});
+		console.error(err);
 	}
 };
 
