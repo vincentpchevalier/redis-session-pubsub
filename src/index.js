@@ -14,9 +14,12 @@ redisPubSub();
 
 app.get('/', (_req, res) => res.send('Server is running 👋'));
 
-app.use('/', sessionRouter);
+app.use('/session', sessionRouter);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-	console.log(`App listening on port:${port}`);
-});
+// break into two server files for development
+// const port = process.env.PORT || 3000;
+// app.listen(port, () => {
+// 	console.log(`App listening on port:${port}`);
+// });
+
+export default app;
