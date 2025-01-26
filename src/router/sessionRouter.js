@@ -3,12 +3,12 @@ import {
 	closeSession,
 	joinSession,
 	message,
-	startSession,
+	createSession,
 } from '../controllers/sessionController.js';
 
 const sessionRouter = Router();
 
-sessionRouter.post('/session', startSession);
+sessionRouter.post('/session', createSession);
 sessionRouter.get('/session/:id', joinSession);
 sessionRouter.post('/session/:id', message);
 sessionRouter.delete('/session/:id', closeSession);
