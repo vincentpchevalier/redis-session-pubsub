@@ -31,8 +31,3 @@ export const leaveSession = async (userId, code) => {
 	// unsubscribe from session (maybe create a PUT route or keep this for ws)
 	await unsubscribe(code);
 };
-
-export const endSession = async () => {
-	// call disconnect
-	// send end session message to user
-};

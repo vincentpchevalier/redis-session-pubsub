@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import {
 	createSession,
-	closeSession,
 	joinSession,
 	leaveSession,
 	message,
@@ -13,6 +12,5 @@ sessionRouter.post('/', createSession);
 sessionRouter.get('/join', joinSession);
 sessionRouter.post('/message', message);
 sessionRouter.put('/leave', leaveSession);
-sessionRouter.delete('/', closeSession);
 
 export default sessionRouter;

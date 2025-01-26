@@ -50,7 +50,3 @@ export const leaveSession = async (req, res) => {
 		console.error(error);
 	}
 };
-
-export const closeSession = async (req, res) => {
-	res.status(200).json({ status: 'closed', message: 'Ended session.' });
-};
