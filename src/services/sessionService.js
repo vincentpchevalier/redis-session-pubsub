@@ -1,4 +1,4 @@
-import { publish, subscribe } from './pubsub.js';
+import { publish, subscribe, unsubscribe } from './pubsub.js';
 
 const sessions = new Set();
 
@@ -16,19 +16,20 @@ export const startSession = async (userId) => {
 	return code;
 };
 
-export const sendMessage = async (code, message) => {
-	// call publish to session
-	await publish(code, message);
-};
-
 export const joinSession = async (userId, code) => {
 	console.log(userId, code);
 	// call subscribe using code
 	await subscribe(userId, code);
 };
 
-export const leaveSession = async (sessionId) => {
+export const sendMessage = async (code, message) => {
+	// call publish to session
+	await publish(code, message);
+};
+
+export const leaveSession = async (userId, code) => {
 	// unsubscribe from session (maybe create a PUT route or keep this for ws)
+	await unsubscribe(code);
 };
 
 export const endSession = async () => {

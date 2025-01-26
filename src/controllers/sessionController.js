@@ -40,6 +40,17 @@ export const message = async (req, res) => {
 	}
 };
 
+export const leaveSession = async (req, res) => {
+	try {
+		const { userId, code } = req.body;
+		console.log(userId, code);
+		await sessionService.leaveSession(userId, code);
+		res.status(200).json({ status: `user ${userId} left session ${code}` });
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 export const closeSession = async (req, res) => {
 	res.status(200).json({ status: 'closed', message: 'Ended session.' });
 };

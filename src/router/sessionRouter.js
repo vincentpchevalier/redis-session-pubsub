@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import {
+	createSession,
 	closeSession,
 	joinSession,
+	leaveSession,
 	message,
-	createSession,
 } from '../controllers/sessionController.js';
 
 const sessionRouter = Router();
@@ -11,6 +12,7 @@ const sessionRouter = Router();
 sessionRouter.post('/', createSession);
 sessionRouter.get('/join', joinSession);
 sessionRouter.post('/message', message);
+sessionRouter.put('/leave', leaveSession);
 sessionRouter.delete('/', closeSession);
 
 export default sessionRouter;
