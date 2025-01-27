@@ -12,7 +12,7 @@ export const createSession = async (req, res) => {
 		const code = await sessionService.startSession(userId);
 
 		res.status(201).json({ status: 'success', data: { code } });
-	} catch (err) {
+	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
@@ -46,7 +46,7 @@ export const message = async (req, res) => {
 		await sessionService.sendMessage(code, message);
 
 		res.status(200).json({ status: 'sent' });
-	} catch (err) {
+	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
