@@ -51,6 +51,7 @@ export const subscribe = async (userId, sessionId) => {
 		});
 	} catch (error) {
 		console.error(`Failed to subscribe to session: ${error.message}`);
+		throw error;
 	}
 };
 
@@ -65,6 +66,7 @@ export const unsubscribe = async (sessionId) => {
 		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
 		console.error(`Something went wrong when unsubscribing: ${error.message}`);
+		throw error;
 	}
 };
 
@@ -75,7 +77,10 @@ export const publish = async (sessionId, message) => {
 		await checkRedisConnection();
 
 		await pubClient.publish(sessionId, JSON.stringify(message));
-	} catch (error) {}
+	} catch (error) {
+		console.error(`Error occurred when publishing to client: ${error.message}`);
+		throw error;
+	}
 };
 
 // Disconnects from Redis clients; use unsubscribe instead for now.
