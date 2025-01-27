@@ -42,28 +42,40 @@ const checkRedisConnection = async () => {
 };
 
 export const subscribe = async (userId, sessionId) => {
-	await checkRedisConnection();
+	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
 
-	await subClient.subscribe(sessionId, (message) => {
-		console.log(`User ${userId} received message: ${message} `);
-	});
+	try {
+		await checkRedisConnection();
+		await subClient.subscribe(sessionId, (message) => {
+			console.log(`User ${userId} received message: ${message}`);
+		});
+	} catch (error) {
+		console.error(`Failed to subscribe to session: ${error.message}`);
+	}
 };
 
 export const unsubscribe = async (sessionId) => {
+	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
+
 	try {
-		console.log(`Unsubscribing from session ${sessionId}`);
 		await checkRedisConnection();
 
 		await subClient.unsubscribe(sessionId);
+
+		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
-		console.error(error);
+		console.error(`Something went wrong when unsubscribing: ${error.message}`);
 	}
 };
 
 export const publish = async (sessionId, message) => {
-	await checkRedisConnection();
+	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
 
-	await pubClient.publish(sessionId, JSON.stringify(message));
+	try {
+		await checkRedisConnection();
+
+		await pubClient.publish(sessionId, JSON.stringify(message));
+	} catch (error) {}
 };
 
 // Disconnects from Redis clients; use unsubscribe instead for now.
