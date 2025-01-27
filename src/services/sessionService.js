@@ -8,26 +8,38 @@ const generateCode = () => {
 };
 
 export const startSession = async (userId) => {
-	// generate token code
-	const code = generateCode();
-	// call subscribe using token code as session id
-	await subscribe(userId, code);
-	// return code (token) in response
-	return code;
+	try {
+		const code = generateCode();
+
+		await subscribe(userId, code);
+
+		// code sent to user in response
+		return code;
+	} catch (error) {
+		console.error(`Unable to start session for user ${userId}.`);
+	}
 };
 
 export const joinSession = async (userId, code) => {
-	console.log(userId, code);
-	// call subscribe using code
-	await subscribe(userId, code);
+	try {
+		await subscribe(userId, code);
+	} catch (error) {
+		console.error(`User ${userId} unable to join session ${code}.`);
+	}
 };
 
 export const sendMessage = async (code, message) => {
-	// call publish to session
-	await publish(code, message);
+	try {
+		await publish(code, message);
+	} catch (error) {
+		console.error(`Unable to send message.`);
+	}
 };
 
 export const leaveSession = async (userId, code) => {
-	// unsubscribe from session (maybe create a PUT route or keep this for ws)
-	await unsubscribe(code);
+	try {
+		await unsubscribe(code);
+	} catch (error) {
+		console.error(`User ${userId} could not leave session ${code}.`);
+	}
 };
