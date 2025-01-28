@@ -28,6 +28,20 @@ export const startSession = async (userId) => {
 
 export const joinSession = async (userId, code) => {
 	try {
+		const members = await cache.getUsers(code);
+
+		if (!members) {
+			console.log(`Invalid session code: ${code}.`);
+			return { success: false, message: `Invalid session code: ${code}.` };
+		}
+
+		const newUser = await cache.addToSet(code, userId);
+
+		if (!newUser) {
+			console.log(`User ${userId} is already a member of session ${code}.`);
+			return { success: false, message: 'User is already in session.' };
+		}
+
 		await subscribe(userId, code);
 	} catch (error) {
 		console.error(`User ${userId} unable to join session ${code}.`);
