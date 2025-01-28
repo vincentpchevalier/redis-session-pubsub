@@ -14,7 +14,7 @@ export const startSession = async (userId) => {
 		const code = generateCode();
 
 		while (!isCached) {
-			isCached = await cache.addToSet(code, userId);
+			isCached = await cache.addUsers(code, userId);
 		}
 
 		await subscribe(userId, code);
@@ -35,14 +35,15 @@ export const joinSession = async (userId, code) => {
 			return { success: false, message: `Invalid session code: ${code}.` };
 		}
 
-		const newUser = await cache.addToSet(code, userId);
+		const newUser = await cache.addUsers(code, userId);
 
 		if (!newUser) {
-			console.log(`User ${userId} is already a member of session ${code}.`);
 			return { success: false, message: 'User is already in session.' };
 		}
 
 		await subscribe(userId, code);
+
+		return { success: true, message: 'User joined session successfully.' };
 	} catch (error) {
 		console.error(`User ${userId} unable to join session ${code}.`);
 	}
