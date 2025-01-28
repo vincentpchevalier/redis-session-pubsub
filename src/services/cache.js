@@ -14,8 +14,26 @@ export const init = async () => {
 	console.log('Redis cache set up.');
 };
 
-export const getItem = async (sessionId) => {
+// get members from cache based on sessionId
+export const getUsers = async (sessionId) => {
 	// get session info from redis (if it exists)
 };
 
-export const setItem = async (sessionId) => {};
+// set members to cache based on sessionId
+export const addToSet = async (sessionId, userId) => {
+	const sessionKey = `${process.env.CACHE_KEY}${sessionId}`;
+	const session = await cacheClient.sAdd(sessionKey, userId);
+
+	await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION); // exp in 1 hour
+
+	console.log(
+		`User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+	);
+
+	return session;
+};
+
+export const isValid = async (id) => {
+	// use this when going to create new code, before you can use it, make sure there are no other sessions with that code number (redo if true)
+	// if sismember then true else not valid
+};
