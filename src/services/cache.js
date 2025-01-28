@@ -24,17 +24,27 @@ export const getUsers = async (sessionId) => {
 };
 
 // set members to cache based on sessionId
-export const addToSet = async (sessionId, userId) => {
+export const addUsers = async (sessionId, userId) => {
 	const sessionKey = `${process.env.CACHE_KEY}${sessionId}`;
-	const session = await cacheClient.sAdd(sessionKey, userId);
 
-	await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION); // exp in 1 hour
+	const userCount = await cacheClient.sCard(sessionKey);
+
+	if (userCount >= 2) {
+		console.log(`Session ${sessionId} is already full with 2 members.`);
+		return null;
+	}
+
+	const added = await cacheClient.sAdd(sessionKey, userId);
+
+	await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION); // set expiry to 1 hour
 
 	console.log(
-		`User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+		added
+			? `User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+			: `User ${userId} could not be added to ${sessionKey}.`
 	);
 
-	return session;
+	return added;
 };
 
 export const isValid = async (id) => {
