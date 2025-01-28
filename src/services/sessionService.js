@@ -1,4 +1,5 @@
 import { publish, subscribe, unsubscribe } from './pubsub.js';
+import * as cache from './cache.js';
 
 const sessions = new Set();
 
@@ -9,7 +10,12 @@ const generateCode = () => {
 
 export const startSession = async (userId) => {
 	try {
+		let isCached;
 		const code = generateCode();
+
+		while (!isCached) {
+			isCached = await cache.addToSet(code, userId);
+		}
 
 		await subscribe(userId, code);
 
