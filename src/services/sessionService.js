@@ -32,20 +32,22 @@ export const joinSession = async (userId, code) => {
 
 		if (!members) {
 			console.log(`Invalid session code: ${code}.`);
-			return { success: false, message: `Invalid session code: ${code}.` };
+			throw new Error(`Invalid session code: ${code}.`);
 		}
 
 		const newUser = await cache.addUsers(code, userId);
 
 		if (!newUser) {
-			return { success: false, message: 'User is already in session.' };
+			throw new Error('User is already in session.');
 		}
 
 		await subscribe(userId, code);
 
 		return { success: true, message: 'User joined session successfully.' };
 	} catch (error) {
-		console.error(`User ${userId} unable to join session ${code}.`);
+		console.error(
+			`User ${userId} unable to join session ${code} due to: ${error.message}.`
+		);
 	}
 };
 
