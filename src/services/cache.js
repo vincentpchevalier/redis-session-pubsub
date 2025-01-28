@@ -16,7 +16,11 @@ export const init = async () => {
 
 // get members from cache based on sessionId
 export const getUsers = async (sessionId) => {
-	// get session info from redis (if it exists)
+	// get session members from redis (if it exists)
+	const sessionKey = `${process.env.CACHE_KEY}${sessionId}`;
+	const users = await cacheClient.sMembers(sessionKey);
+
+	return users.length > 0 ? users : null;
 };
 
 // set members to cache based on sessionId
