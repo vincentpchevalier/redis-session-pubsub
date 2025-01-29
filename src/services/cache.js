@@ -17,7 +17,7 @@ export const init = async () => {
 // get members from cache based on sessionId
 export const getUsers = async (sessionId) => {
 	// get session members from redis (if it exists)
-	const sessionKey = `${process.env.CACHE_KEY}${sessionId}`;
+	const sessionKey = `${process.env.SESSION_KEY}${sessionId}`;
 	const users = await cacheClient.sMembers(sessionKey);
 
 	return users.length > 0 ? users : null;
@@ -25,7 +25,7 @@ export const getUsers = async (sessionId) => {
 
 // set members to cache based on sessionId
 export const addUsers = async (sessionId, userId) => {
-	const sessionKey = `${process.env.CACHE_KEY}${sessionId}`;
+	const sessionKey = `${process.env.SESSION_KEY}${sessionId}`;
 
 	const userCount = await cacheClient.sCard(sessionKey);
 
@@ -33,6 +33,8 @@ export const addUsers = async (sessionId, userId) => {
 		console.log(`Session ${sessionId} is already full with 2 members.`);
 		return null;
 	}
+
+	const newUser = await cacheClient.set(`${process.env.USER_KEY}`);
 
 	const added = await cacheClient.sAdd(sessionKey, userId);
 
