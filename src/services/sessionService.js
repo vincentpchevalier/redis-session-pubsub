@@ -22,7 +22,9 @@ export const startSession = async (userId) => {
 		// code sent to user in response
 		return code;
 	} catch (error) {
-		console.error(`Unable to start session for user ${userId}.`);
+		console.error(
+			`Unable to start session for user ${userId} due to: ${error.message}.`
+		);
 	}
 };
 
@@ -42,8 +44,6 @@ export const joinSession = async (userId, code) => {
 		}
 
 		await subscribe(userId, code);
-
-		return { success: true, message: 'User joined session successfully.' };
 	} catch (error) {
 		console.error(
 			`User ${userId} unable to join session ${code} due to: ${error.message}.`
