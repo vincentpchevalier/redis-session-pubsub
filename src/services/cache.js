@@ -23,30 +23,50 @@ export const getUsers = async (sessionId) => {
 	return users.length > 0 ? users : null;
 };
 
-// set members to cache based on sessionId
-export const addUsers = async (sessionId, userId) => {
-	const sessionKey = `${process.env.SESSION_KEY}${sessionId}`;
+export const createSession = async (sessionCode, userId) => {
+	const sessionKey = process.env.SESSION_KEY + sessionCode;
+	const userKey = process.env.USER_KEY + userId;
 
-	const userCount = await cacheClient.sCard(sessionKey);
+	try {
+		await cacheClient.sAdd(sessionKey, userKey);
+		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
 
-	if (userCount >= 2) {
-		console.log(`Session ${sessionId} is already full with 2 members.`);
-		return null;
+		return true;
+	} catch (error) {
+		console.error(`Unable to create session: ${error.message}`);
+		throw error;
 	}
+};
 
-	const newUser = await cacheClient.set(`${process.env.USER_KEY}`);
+// set user members to cache based on sessionId
+export const addUser = async (sessionCode, userId) => {
+	const sessionKey = process.env.SESSION_KEY + sessionCode;
+	const userKey = process.env.USER_KEY + userId;
 
-	const added = await cacheClient.sAdd(sessionKey, userId);
+	try {
+		const exists = await cacheClient.exists(sessionKey);
 
-	await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION); // set expiry to 1 hour
+		if (!exists) {
+			throw new Error(`Invalid session ID.`);
+		}
 
-	console.log(
-		added
-			? `User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
-			: `User ${userId} could not be added to ${sessionKey}.`
-	);
+		const userCount = await cacheClient.sCard(sessionKey);
 
-	return added;
+		if (userCount >= 2)
+			throw new Error(`Session ${sessionId} is already full with 2 members.`);
+
+		await cacheClient.sAdd(sessionKey, userKey);
+		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
+
+		console.log(
+			`User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+		);
+
+		return true;
+	} catch (error) {
+		console.error(`Unable to add user ${userId}: ${error.message}`);
+		throw error;
+	}
 };
 
 export const isValid = async (id) => {
