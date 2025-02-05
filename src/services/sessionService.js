@@ -14,7 +14,7 @@ export const startSession = async (userId) => {
 		const code = generateCode();
 
 		while (!isCached) {
-			isCached = await cache.addUsers(code, userId);
+			isCached = await cache.createSession(code, userId);
 		}
 
 		await subscribe(userId, code);
@@ -25,29 +25,20 @@ export const startSession = async (userId) => {
 		console.error(
 			`Unable to start session for user ${userId} due to: ${error.message}.`
 		);
+		throw error;
 	}
 };
 
 export const joinSession = async (userId, code) => {
 	try {
-		const members = await cache.getUsers(code);
-
-		if (!members) {
-			console.log(`Invalid session code: ${code}.`);
-			throw new Error(`Invalid session code: ${code}.`);
-		}
-
-		const newUser = await cache.addUsers(code, userId);
-
-		if (!newUser) {
-			throw new Error('User is already in session.');
-		}
+		await cache.addUser(code, userId);
 
 		await subscribe(userId, code);
 	} catch (error) {
 		console.error(
 			`User ${userId} unable to join session ${code} due to: ${error.message}.`
 		);
+		throw error;
 	}
 };
 
