@@ -15,7 +15,7 @@ export const validateUser = async (req, res, next) => {
 		const isMember = await cacheClient.sIsMember(sessionKey, userKey);
 
 		if (!isMember) {
-			return res.status(400).json({
+			return res.status(403).json({
 				error: `${username} is not a member of session ${sessionCode}.`,
 			});
 		}
