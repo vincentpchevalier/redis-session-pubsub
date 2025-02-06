@@ -1,4 +1,4 @@
-import { publish, subscribe, unsubscribe } from './pubsub.js';
+import { publish, subscribe, unsubscribe, disconnect } from './pubsub.js';
 import * as cache from './cache.js';
 import { generateKeys, parseKey } from '../utils/keys.js';
 import { generateCode } from '../utils/generateCode.js';
@@ -57,6 +57,20 @@ export const leaveSession = async (sessionKey, userKey) => {
 		await unsubscribe(sessionKey);
 	} catch (error) {
 		console.error(`User ${userId} could not leave session ${sessionKey}.`);
+		throw error;
+	}
+};
+
+export const closeSession = async (sessionKey) => {
+	try {
+		await sendMessage(
+			sessionKey,
+			`Session ${parseKey(sessionKey)} has been closed and is no longer valid.`
+		);
+		await cache.deleteSession(sessionKey);
+		await disconnect();
+	} catch (error) {
+		console.error(`Unable to close session.`);
 		throw error;
 	}
 };
