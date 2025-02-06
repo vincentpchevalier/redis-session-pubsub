@@ -1,6 +1,6 @@
 import { publish, subscribe, unsubscribe } from './pubsub.js';
 import * as cache from './cache.js';
-import { generateKeys } from '../utils/keys.js';
+import { generateKeys, parseKey } from '../utils/keys.js';
 import { generateCode } from '../utils/generateCode.js';
 
 export const createSession = async (userId) => {
@@ -24,17 +24,18 @@ export const createSession = async (userId) => {
 	}
 };
 
-// FIXME: middleware generates keys based on request object; passed into service from controller
-export const joinSession = async (userId, code) => {
+export const joinSession = async ({ sessionKey, userKey }) => {
 	try {
-		// FIXME: pass session and user keys into cache
-		await cache.addUser(code, userId);
+		await cache.addUser({ sessionKey, userKey });
 
-		// FIXME: parse userId from user key (user:userId) to pass into sub client; pass sessionKey to subscribe client (session:sessionId)
-		await subscribe(userId, code);
+		const username = parseKey(userKey);
+
+		await subscribe(username, sessionKey);
 	} catch (error) {
 		console.error(
-			`User ${userId} unable to join session ${code} due to: ${error.message}.`
+			`User ${username} unable to join session ${parseKey(
+				sessionKey
+			)} due to: ${error.message}.`
 		);
 		throw error;
 	}

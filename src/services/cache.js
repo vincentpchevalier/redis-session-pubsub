@@ -14,7 +14,6 @@ export const init = async () => {
 	console.log('Redis cache set up.');
 };
 
-// FIXME: use helper method here (code is generated so the middleware doesn't apply)
 export const createSession = async ({ sessionKey, userKey }) => {
 	try {
 		await cacheClient.sAdd(sessionKey, userKey);
@@ -28,17 +27,8 @@ export const createSession = async ({ sessionKey, userKey }) => {
 };
 
 // set user members to cache based on sessionId
-export const addUser = async (sessionCode, userId) => {
-	const sessionKey = process.env.SESSION_KEY + sessionCode;
-	const userKey = process.env.USER_KEY + userId;
-
+export const addUser = async ({ sessionKey, userKey }) => {
 	try {
-		const exists = await cacheClient.exists(sessionKey);
-
-		if (!exists) {
-			throw new Error(`Invalid session ID.`);
-		}
-
 		const userCount = await cacheClient.sCard(sessionKey);
 
 		if (userCount >= 2)
@@ -48,7 +38,7 @@ export const addUser = async (sessionCode, userId) => {
 		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
 
 		console.log(
-			`User ${userId} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+			`${userKey} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
 		);
 
 		return true;

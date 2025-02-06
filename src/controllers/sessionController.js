@@ -19,16 +19,9 @@ export const createSession = async (req, res) => {
 
 export const joinSession = async (req, res) => {
 	try {
-		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
-		const { userId, code } = req.body;
-		console.log(req.keys);
+		const { sessionKey, userKey } = req.keys;
 
-		if (!userId || !code) {
-			res.status(400).json({ error: 'Missing userId or code.' });
-			return;
-		}
-
-		await sessionService.joinSession(userId, code);
+		await sessionService.joinSession({ sessionKey, userKey });
 
 		res.status(200).json({ status: 'joined' });
 	} catch (error) {
