@@ -1,9 +1,14 @@
-import { cacheClient } from '../services/cache';
-import { generateKeys } from '../utils/keys';
+import { cacheClient } from '../services/cache.js';
+import { generateKeys } from '../utils/keys.js';
 
 export const validateSession = async (req, res, next) => {
 	try {
 		const { code, userId } = req.body;
+
+		if (!userId || !code) {
+			res.status(400).json({ error: 'Missing userId or code.' });
+			return;
+		}
 
 		const { sessionKey, userKey } = generateKeys(code, userId);
 

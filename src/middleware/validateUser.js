@@ -1,5 +1,5 @@
-import { cacheClient } from '../services/cache';
-import { parseKey } from '../utils/keys';
+import { cacheClient } from '../services/cache.js';
+import { parseKey } from '../utils/keys.js';
 
 export const validateUser = async (req, res, next) => {
 	try {
@@ -12,7 +12,7 @@ export const validateUser = async (req, res, next) => {
 		const sessionCode = parseKey(sessionKey);
 		const username = parseKey(userKey);
 
-		const isMember = await cacheClient.sisMember(sessionKey, userKey);
+		const isMember = await cacheClient.sIsMember(sessionKey, userKey);
 
 		if (!isMember) {
 			return res.status(400).json({

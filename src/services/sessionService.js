@@ -1,25 +1,20 @@
 import { publish, subscribe, unsubscribe } from './pubsub.js';
 import * as cache from './cache.js';
+import { generateKeys, parseKey } from '../utils/keys.js';
+import { generateCode } from '../utils/generateCode.js';
 
-const sessions = new Set();
-
-const generateCode = () => {
-	const code = Math.floor(1000 + Math.random() * 9000).toString();
-	return code;
-};
-
-export const startSession = async (userId) => {
+export const createSession = async (userId) => {
 	try {
 		let isCached;
 		const code = generateCode();
+		const keys = generateKeys(code, userId);
 
 		while (!isCached) {
-			isCached = await cache.createSession(code, userId);
+			isCached = await cache.createSession(keys);
 		}
 
-		await subscribe(userId, code);
+		await subscribe(userId, keys.sessionKey);
 
-		// code sent to user in response
 		return code;
 	} catch (error) {
 		console.error(
@@ -29,41 +24,39 @@ export const startSession = async (userId) => {
 	}
 };
 
-export const joinSession = async (userId, code) => {
+export const joinSession = async (sessionKey, userKey) => {
 	try {
-		await cache.addUser(code, userId);
+		await cache.addUser({ sessionKey, userKey });
 
-		await subscribe(userId, code);
+		const username = parseKey(userKey);
+
+		await subscribe(username, sessionKey);
 	} catch (error) {
 		console.error(
-			`User ${userId} unable to join session ${code} due to: ${error.message}.`
+			`User ${username} unable to join session ${parseKey(
+				sessionKey
+			)} due to: ${error.message}.`
 		);
 		throw error;
 	}
 };
 
-export const sendMessage = async (userId, code, message) => {
+export const sendMessage = async (sessionKey, message) => {
 	try {
-		const isUser = await cache.checkUser(code, userId);
-
-		if (!isUser) {
-			throw new Error('User must be in session to send message.');
-		}
-
-		await publish(code, message);
+		await publish(sessionKey, message);
 	} catch (error) {
 		console.error(`Unable to send message.`);
 		throw error;
 	}
 };
 
-export const leaveSession = async (userId, code) => {
+export const leaveSession = async (sessionKey, userKey) => {
 	try {
-		await cache.removeUser(code, userId);
+		await cache.removeUser({ sessionKey, userKey });
 
-		await unsubscribe(code);
+		await unsubscribe(sessionKey);
 	} catch (error) {
-		console.error(`User ${userId} could not leave session ${code}.`);
+		console.error(`User ${userId} could not leave session ${sessionKey}.`);
 		throw error;
 	}
 };
