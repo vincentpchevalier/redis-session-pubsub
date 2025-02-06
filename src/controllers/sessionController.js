@@ -9,7 +9,7 @@ export const createSession = async (req, res) => {
 			return;
 		}
 
-		const code = await sessionService.startSession(userId);
+		const code = await sessionService.createSession(userId);
 
 		res.status(201).json({ status: 'success', data: { code } });
 	} catch (error) {

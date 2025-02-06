@@ -10,22 +10,18 @@ const generateCode = () => {
 	return code;
 };
 
-// FIXME: generates 4-digit code; userId passed in from controller; no middleware so it's raw
-export const startSession = async (userId) => {
+export const createSession = async (userId) => {
 	try {
 		let isCached;
 		const code = generateCode();
 		const keys = generateKeys(code, userId);
 
-		// FIXME: generate keys for cache (session:code and user:userId)
 		while (!isCached) {
 			isCached = await cache.createSession(keys);
 		}
 
-		// FIXME: pass userId (not key) and session:code
 		await subscribe(userId, keys.sessionKey);
 
-		// FIXME: return raw code to session controller (for response)
 		return code;
 	} catch (error) {
 		console.error(
