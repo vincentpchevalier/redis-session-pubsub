@@ -36,14 +36,14 @@ export const joinSession = async (req, res) => {
 
 export const message = async (req, res) => {
 	try {
-		const { code, userId, message } = req.body;
+		const { userId, code, message } = req.body;
 
-		if (!code || !userId || !message) {
+		if (!userId || !code || !message) {
 			res.status(400).json({ error: 'Missing userId or code.' });
 			return;
 		}
 
-		await sessionService.sendMessage(code, userId, message);
+		await sessionService.sendMessage(userId, code, message);
 
 		res.status(200).json({ status: 'sent' });
 	} catch (error) {
