@@ -14,15 +14,6 @@ export const init = async () => {
 	console.log('Redis cache set up.');
 };
 
-// get members from cache based on sessionId
-export const getUsers = async (sessionId) => {
-	// get session members from redis (if it exists)
-	const sessionKey = `${process.env.SESSION_KEY}${sessionId}`;
-	const users = await cacheClient.sMembers(sessionKey);
-
-	return users.length > 0 ? users : null;
-};
-
 export const createSession = async (sessionCode, userId) => {
 	const sessionKey = process.env.SESSION_KEY + sessionCode;
 	const userKey = process.env.USER_KEY + userId;
@@ -69,7 +60,23 @@ export const addUser = async (sessionCode, userId) => {
 	}
 };
 
-export const isValid = async (id) => {
-	// use this when going to create new code, before you can use it, make sure there are no other sessions with that code number (redo if true)
-	// if sismember then true else not valid
+// get members from cache based on sessionId
+export const checkUser = async (sessionCode, userId) => {
+	console.log('checking user');
+	// get session members from redis (if it exists)
+	const sessionKey = `${process.env.SESSION_KEY}${sessionCode}`;
+	const userKey = `${process.env.USER_KEY}${userId}`;
+	try {
+		const exists = await cacheClient.exists(sessionKey);
+		if (!exists) {
+			throw new Error(`Invalid session ID.`);
+		}
+		console.log(sessionKey);
+		console.log(userKey);
+
+		return await cacheClient.sIsMember(sessionKey, userKey);
+	} catch (error) {
+		console.error(`Unable to get user ${userId}: ${error.message}`);
+		throw error;
+	}
 };

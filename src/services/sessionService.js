@@ -42,11 +42,18 @@ export const joinSession = async (userId, code) => {
 	}
 };
 
-export const sendMessage = async (code, message) => {
+export const sendMessage = async (code, userId, message) => {
 	try {
+		const isUser = await cache.checkUser(code, userId);
+
+		if (!isUser) {
+			throw new Error('User must be in session to send message.');
+		}
+
 		await publish(code, message);
 	} catch (error) {
 		console.error(`Unable to send message.`);
+		throw error;
 	}
 };
 
