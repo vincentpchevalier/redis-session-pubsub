@@ -1,6 +1,7 @@
 import { publish, subscribe, unsubscribe } from './pubsub.js';
 import * as cache from './cache.js';
 import { generateKeys } from '../utils/keys.js';
+import { generateCode } from '../utils/generateCode.js';
 
 export const createSession = async (userId) => {
 	try {
