@@ -2,14 +2,6 @@ import { publish, subscribe, unsubscribe } from './pubsub.js';
 import * as cache from './cache.js';
 import { generateKeys } from '../utils/keys.js';
 
-const sessions = new Set();
-
-// TODO: move into utils
-const generateCode = () => {
-	const code = Math.floor(1000 + Math.random() * 9000).toString();
-	return code;
-};
-
 export const createSession = async (userId) => {
 	try {
 		let isCached;
