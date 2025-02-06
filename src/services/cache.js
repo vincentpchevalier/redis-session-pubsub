@@ -1,4 +1,5 @@
 import redis from 'redis';
+import { parseKey } from '../utils/keys.js';
 
 let cacheClient;
 
@@ -48,28 +49,11 @@ export const addUser = async ({ sessionKey, userKey }) => {
 	}
 };
 
-export const removeUser = async (sessionCode, userId) => {
-	// get session members from redis (if it exists)
-	// FIXME: sessionKey and userKey passed through request from middleware validation
-	const sessionKey = `${process.env.SESSION_KEY}${sessionCode}`;
-	const userKey = `${process.env.USER_KEY}${userId}`;
+export const removeUser = async ({ sessionKey, userKey }) => {
 	try {
-		// FIXME: get rid of these checks, middleware will take care of it
-		const exists = await cacheClient.exists(sessionKey);
-		if (!exists) {
-			throw new Error(`Invalid session ID.`);
-		}
-
-		const isUser = await cacheClient.sIsMember(sessionKey, userKey);
-
-		if (isUser) {
-			await cacheClient.sRem(sessionKey, userKey);
-			return true;
-		} else {
-			throw new Error(`Invalid user ID.`);
-		}
+		await cacheClient.sRem(sessionKey, userKey);
 	} catch (error) {
-		console.error(`Unable to find user ${userId}: ${error.message}`);
+		console.error(`Unable to find user ${parseKey(userKey)}: ${error.message}`);
 		throw error;
 	}
 };
