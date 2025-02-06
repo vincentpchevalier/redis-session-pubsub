@@ -50,15 +50,13 @@ export const sendMessage = async (sessionKey, message) => {
 	}
 };
 
-// FIXME: middleware generates keys based on request object; passed into service from controller
-export const leaveSession = async (userId, code) => {
+export const leaveSession = async (sessionKey, userKey) => {
 	try {
-		// FIXME: pass sessionKey and userKey into cache function
-		await cache.removeUser(code, userId);
+		await cache.removeUser({ sessionKey, userKey });
 
-		await unsubscribe(code);
+		await unsubscribe(sessionKey);
 	} catch (error) {
-		console.error(`User ${userId} could not leave session ${code}.`);
+		console.error(`User ${userId} could not leave session ${sessionKey}.`);
 		throw error;
 	}
 };
