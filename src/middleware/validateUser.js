@@ -1,5 +1,5 @@
-import { cacheClient } from '../services/cache';
-import { parseKey } from '../utils/keys';
+import { cacheClient } from '../services/cache.js';
+import { parseKey } from '../utils/keys.js';
 
 export const validateUser = async (req, res, next) => {
 	try {
