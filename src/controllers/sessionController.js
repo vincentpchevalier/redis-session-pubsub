@@ -21,7 +21,7 @@ export const joinSession = async (req, res) => {
 	try {
 		const { sessionKey, userKey } = req.keys;
 
-		await sessionService.joinSession({ sessionKey, userKey });
+		await sessionService.joinSession(sessionKey, userKey);
 
 		res.status(200).json({ status: 'joined' });
 	} catch (error) {
@@ -31,16 +31,15 @@ export const joinSession = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
 	try {
-		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
-		// FIXME: message stays coming through req.body
-		const { userId, code, message } = req.body;
+		const { sessionKey } = req.keys;
+		const { message } = req.body;
 
-		if (!userId || !code || !message) {
-			res.status(400).json({ error: 'Missing userId or code.' });
+		if (!message) {
+			res.status(400).json({ error: 'Request must contain message.' });
 			return;
 		}
 
-		await sessionService.sendMessage(userId, code, message);
+		await sessionService.sendMessage(sessionKey, message);
 
 		res.status(200).json({ status: 'sent' });
 	} catch (error) {
