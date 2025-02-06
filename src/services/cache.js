@@ -48,25 +48,6 @@ export const addUser = async ({ sessionKey, userKey }) => {
 	}
 };
 
-// get members from cache based on sessionId
-export const checkUser = async (sessionCode, userId) => {
-	console.log('checking user');
-	// get session members from redis (if it exists)
-	const sessionKey = `${process.env.SESSION_KEY}${sessionCode}`;
-	const userKey = `${process.env.USER_KEY}${userId}`;
-	try {
-		const exists = await cacheClient.exists(sessionKey);
-		if (!exists) {
-			throw new Error(`Invalid session ID.`);
-		}
-
-		return await cacheClient.sIsMember(sessionKey, userKey);
-	} catch (error) {
-		console.error(`Unable to find user ${userId}: ${error.message}`);
-		throw error;
-	}
-};
-
 export const removeUser = async (sessionCode, userId) => {
 	// get session members from redis (if it exists)
 	// FIXME: sessionKey and userKey passed through request from middleware validation
