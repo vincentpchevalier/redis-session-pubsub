@@ -1,4 +1,4 @@
-import * as cache from '../services/cache.js';
+import { cacheClient } from '../services/cache';
 
 export const validateUser = async (req, res, next) => {
 	try {
@@ -11,7 +11,7 @@ export const validateUser = async (req, res, next) => {
 		const sessionCode = sessionKey?.split(process.env.SESSION_KEY)[1];
 		const username = userKey?.split(process.env.USER_KEY)[1];
 
-		const isMember = await cache.cacheClient.sisMember(sessionKey, userKey);
+		const isMember = await cacheClient.sisMember(sessionKey, userKey);
 
 		if (!isMember) {
 			return res.status(400).json({

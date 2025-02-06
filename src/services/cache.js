@@ -102,3 +102,5 @@ export const removeUser = async (sessionCode, userId) => {
 		throw error;
 	}
 };
+
+export { cacheClient };
