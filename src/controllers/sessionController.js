@@ -29,7 +29,7 @@ export const joinSession = async (req, res) => {
 	}
 };
 
-export const message = async (req, res) => {
+export const sendMessage = async (req, res) => {
 	try {
 		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
 		// FIXME: message stays coming through req.body

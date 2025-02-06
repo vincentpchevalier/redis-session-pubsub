@@ -5,14 +5,14 @@ import {
 	createSession,
 	joinSession,
 	leaveSession,
-	message,
+	sendMessage,
 } from '../controllers/sessionController.js';
 
 const sessionRouter = Router();
 
 sessionRouter.post('/', createSession);
 sessionRouter.get('/join', validateSession, joinSession);
-sessionRouter.post('/message', validateSession, validateUser, message);
+sessionRouter.post('/message', validateSession, validateUser, sendMessage);
 sessionRouter.put('/leave', validateSession, validateUser, leaveSession);
 
 export default sessionRouter;
