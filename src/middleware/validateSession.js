@@ -1,4 +1,4 @@
-import * as cache from '../services/cache.js';
+import { cacheClient } from '../services/cache';
 
 export const validateSession = async (req, res, next) => {
 	try {
@@ -11,7 +11,7 @@ export const validateSession = async (req, res, next) => {
 		const sessionKey = process.env.SESSION_KEY + code;
 		const userKey = process.env.USER_KEY + userId;
 
-		const exists = await cache.cacheClient.exists(sessionKey);
+		const exists = await cacheClient.exists(sessionKey);
 		if (!exists) {
 			return res.status(400).json({ error: 'Invalid session code.' });
 		}
