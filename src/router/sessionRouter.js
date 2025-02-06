@@ -1,12 +1,12 @@
 import { Router } from 'express';
+import { validateSession } from '../middleware/validateSession.js';
+import { validateUser } from '../middleware/validateUser.js';
 import {
 	createSession,
 	joinSession,
 	leaveSession,
 	message,
 } from '../controllers/sessionController.js';
-import { validateSession } from '../middleware/validateSession.js';
-import { validateUser } from '../middleware/validateUser.js';
 
 const sessionRouter = Router();
 

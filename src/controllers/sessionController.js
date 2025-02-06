@@ -19,7 +19,9 @@ export const createSession = async (req, res) => {
 
 export const joinSession = async (req, res) => {
 	try {
+		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
 		const { userId, code } = req.body;
+		console.log(req.keys);
 
 		if (!userId || !code) {
 			res.status(400).json({ error: 'Missing userId or code.' });
@@ -36,6 +38,8 @@ export const joinSession = async (req, res) => {
 
 export const message = async (req, res) => {
 	try {
+		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
+		// FIXME: message stays coming through req.body
 		const { userId, code, message } = req.body;
 
 		if (!userId || !code || !message) {
@@ -53,6 +57,7 @@ export const message = async (req, res) => {
 
 export const leaveSession = async (req, res) => {
 	try {
+		// FIXME: replace with sessionKey and userKey from req.keys generated in middleware
 		const { userId, code } = req.body;
 		if (!userId || !code) {
 			res.status(400).json({ error: 'Missing userId or code.' });

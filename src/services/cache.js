@@ -14,6 +14,7 @@ export const init = async () => {
 	console.log('Redis cache set up.');
 };
 
+// FIXME: use helper method here (code is generated so the middleware doesn't apply)
 export const createSession = async (sessionCode, userId) => {
 	const sessionKey = process.env.SESSION_KEY + sessionCode;
 	const userKey = process.env.USER_KEY + userId;
@@ -81,9 +82,11 @@ export const checkUser = async (sessionCode, userId) => {
 
 export const removeUser = async (sessionCode, userId) => {
 	// get session members from redis (if it exists)
+	// FIXME: sessionKey and userKey passed through request from middleware validation
 	const sessionKey = `${process.env.SESSION_KEY}${sessionCode}`;
 	const userKey = `${process.env.USER_KEY}${userId}`;
 	try {
+		// FIXME: get rid of these checks, middleware will take care of it
 		const exists = await cacheClient.exists(sessionKey);
 		if (!exists) {
 			throw new Error(`Invalid session ID.`);
