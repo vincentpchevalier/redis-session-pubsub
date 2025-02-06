@@ -58,4 +58,14 @@ export const removeUser = async ({ sessionKey, userKey }) => {
 	}
 };
 
+export const deleteSession = async (sessionKey) => {
+	try {
+		await cacheClient.del(sessionKey);
+	} catch (error) {
+		console.error(
+			`Unable to delete session ${parseKey(sessionKey)}: ${error.message}`
+		);
+	}
+};
+
 export { cacheClient };
