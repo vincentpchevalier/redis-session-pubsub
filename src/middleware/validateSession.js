@@ -1,25 +1,19 @@
 import { cacheClient } from '../services/cache';
+import { generateKeys } from '../utils/keys';
 
 export const validateSession = async (req, res, next) => {
 	try {
 		const { code, userId } = req.body;
 
-		if (!code || !userId) {
-			return res.status(400).json({ error: 'Missing userId or code.' });
-		}
+		const { sessionKey, userKey } = generateKeys(code, userId);
 
-		const sessionKey = process.env.SESSION_KEY + code;
-		const userKey = process.env.USER_KEY + userId;
+		const inCache = await cacheClient.exists(sessionKey);
 
-		const exists = await cacheClient.exists(sessionKey);
-		if (!exists) {
+		if (!inCache) {
 			return res.status(400).json({ error: 'Invalid session code.' });
 		}
 
-		req.keys = {
-			sessionKey,
-			userKey,
-		};
+		req.keys = { sessionKey, userKey };
 
 		next();
 	} catch (error) {

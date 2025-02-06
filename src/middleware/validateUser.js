@@ -1,15 +1,16 @@
 import { cacheClient } from '../services/cache';
+import { parseKey } from '../utils/keys';
 
 export const validateUser = async (req, res, next) => {
 	try {
-		const { sessionKey, userKey } = req.keys || {};
+		const { sessionKey, userKey } = req.keys;
 
 		if (!sessionKey || !userKey) {
 			return res.status(400).json({ error: 'Missing sessionKey or userKey.' });
 		}
 
-		const sessionCode = sessionKey?.split(process.env.SESSION_KEY)[1];
-		const username = userKey?.split(process.env.USER_KEY)[1];
+		const sessionCode = parseKey(sessionKey);
+		const username = parseKey(userKey);
 
 		const isMember = await cacheClient.sisMember(sessionKey, userKey);
 
