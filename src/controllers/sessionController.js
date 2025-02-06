@@ -60,3 +60,18 @@ export const leaveSession = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
+
+export const closeSession = async (req, res) => {
+	try {
+		const { sessionKey } = req.keys;
+		await sessionService.closeSession(sessionKey);
+
+		res.status(200).json({
+			status: `Session ${parseKey(
+				sessionKey
+			)} has been closed and is no longer valid.`,
+		});
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
