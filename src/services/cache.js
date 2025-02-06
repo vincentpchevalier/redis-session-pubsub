@@ -15,10 +15,7 @@ export const init = async () => {
 };
 
 // FIXME: use helper method here (code is generated so the middleware doesn't apply)
-export const createSession = async (sessionCode, userId) => {
-	const sessionKey = process.env.SESSION_KEY + sessionCode;
-	const userKey = process.env.USER_KEY + userId;
-
+export const createSession = async ({ sessionKey, userKey }) => {
 	try {
 		await cacheClient.sAdd(sessionKey, userKey);
 		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
