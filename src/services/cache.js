@@ -71,12 +71,34 @@ export const checkUser = async (sessionCode, userId) => {
 		if (!exists) {
 			throw new Error(`Invalid session ID.`);
 		}
-		console.log(sessionKey);
-		console.log(userKey);
 
 		return await cacheClient.sIsMember(sessionKey, userKey);
 	} catch (error) {
-		console.error(`Unable to get user ${userId}: ${error.message}`);
+		console.error(`Unable to find user ${userId}: ${error.message}`);
+		throw error;
+	}
+};
+
+export const removeUser = async (sessionCode, userId) => {
+	// get session members from redis (if it exists)
+	const sessionKey = `${process.env.SESSION_KEY}${sessionCode}`;
+	const userKey = `${process.env.USER_KEY}${userId}`;
+	try {
+		const exists = await cacheClient.exists(sessionKey);
+		if (!exists) {
+			throw new Error(`Invalid session ID.`);
+		}
+
+		const isUser = await cacheClient.sIsMember(sessionKey, userKey);
+
+		if (isUser) {
+			await cacheClient.sRem(sessionKey, userKey);
+			return true;
+		} else {
+			throw new Error(`Invalid user ID.`);
+		}
+	} catch (error) {
+		console.error(`Unable to find user ${userId}: ${error.message}`);
 		throw error;
 	}
 };

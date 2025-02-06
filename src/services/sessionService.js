@@ -42,7 +42,7 @@ export const joinSession = async (userId, code) => {
 	}
 };
 
-export const sendMessage = async (code, userId, message) => {
+export const sendMessage = async (userId, code, message) => {
 	try {
 		const isUser = await cache.checkUser(code, userId);
 
@@ -59,8 +59,11 @@ export const sendMessage = async (code, userId, message) => {
 
 export const leaveSession = async (userId, code) => {
 	try {
+		await cache.removeUser(code, userId);
+
 		await unsubscribe(code);
 	} catch (error) {
 		console.error(`User ${userId} could not leave session ${code}.`);
+		throw error;
 	}
 };
