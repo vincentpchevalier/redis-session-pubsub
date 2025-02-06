@@ -24,7 +24,7 @@ export const createSession = async (userId) => {
 	}
 };
 
-export const joinSession = async ({ sessionKey, userKey }) => {
+export const joinSession = async (sessionKey, userKey) => {
 	try {
 		await cache.addUser({ sessionKey, userKey });
 
@@ -41,18 +41,9 @@ export const joinSession = async ({ sessionKey, userKey }) => {
 	}
 };
 
-// FIXME: middleware generates keys based on request object; passed into service from controller
-export const sendMessage = async (userId, code, message) => {
+export const sendMessage = async (sessionKey, message) => {
 	try {
-		// FIXME: get rid of this because it is now done in the validateUser middleware
-		const isUser = await cache.checkUser(code, userId);
-
-		if (!isUser) {
-			throw new Error('User must be in session to send message.');
-		}
-
-		// FIXME: sessionKey passed to pub client
-		await publish(code, message);
+		await publish(sessionKey, message);
 	} catch (error) {
 		console.error(`Unable to send message.`);
 		throw error;
