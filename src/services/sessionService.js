@@ -1,5 +1,6 @@
 import { publish, subscribe, unsubscribe } from './pubsub.js';
 import * as cache from './cache.js';
+import { generateKeys } from '../utils/keys.js';
 
 const sessions = new Set();
 
@@ -14,14 +15,15 @@ export const startSession = async (userId) => {
 	try {
 		let isCached;
 		const code = generateCode();
+		const keys = generateKeys(code, userId);
 
 		// FIXME: generate keys for cache (session:code and user:userId)
 		while (!isCached) {
-			isCached = await cache.createSession(code, userId);
+			isCached = await cache.createSession(keys);
 		}
 
 		// FIXME: pass userId (not key) and session:code
-		await subscribe(userId, code);
+		await subscribe(userId, keys.sessionKey);
 
 		// FIXME: return raw code to session controller (for response)
 		return code;
