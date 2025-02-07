@@ -1,5 +1,5 @@
 import redis from 'redis';
-import { parseKey } from '../utils/keys.js';
+
 import { ForbiddenError, ServiceError } from '../utils/errors.js';
 
 let cacheClient;

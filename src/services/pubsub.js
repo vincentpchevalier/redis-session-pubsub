@@ -1,4 +1,5 @@
 import redis from 'redis';
+
 import { ServiceError } from '../utils/errors';
 
 let pubClient;
