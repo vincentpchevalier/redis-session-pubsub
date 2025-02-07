@@ -1,8 +1,9 @@
 import * as sessionService from '../services/sessionService.js';
 import { BadRequestError } from '../utils/errors.js';
 import { parseKey } from '../utils/keys.js';
+import requestHandler from '../utils/requestHandler.js';
 
-export const createSession = async (req, res) => {
+export const createSession = requestHandler(async (req, res) => {
 	const { userId } = req.body;
 
 	if (!userId) {
@@ -16,9 +17,9 @@ export const createSession = async (req, res) => {
 		message: `Session created.`,
 		data: { code },
 	});
-};
+});
 
-export const joinSession = async (req, res) => {
+export const joinSession = requestHandler(async (req, res) => {
 	const { sessionKey, userKey } = req.keys;
 
 	await sessionService.joinSession(sessionKey, userKey);
@@ -27,9 +28,9 @@ export const joinSession = async (req, res) => {
 		success: true,
 		message: `${parseKey(userKey)} joined session ${parseKey(sessionKey)}`,
 	});
-};
+});
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = requestHandler(async (req, res) => {
 	const { sessionKey } = req.keys;
 	const { message } = req.body;
 
@@ -40,9 +41,9 @@ export const sendMessage = async (req, res) => {
 	await sessionService.sendMessage(sessionKey, message);
 
 	res.status(200).json({ success: true, message: 'Message sent.' });
-};
+});
 
-export const leaveSession = async (req, res) => {
+export const leaveSession = requestHandler(async (req, res) => {
 	const { sessionKey, userKey } = req.keys;
 
 	await sessionService.leaveSession(sessionKey, userKey);
@@ -50,9 +51,9 @@ export const leaveSession = async (req, res) => {
 		success: true,
 		message: `${parseKey(userKey)} left session ${parseKey(sessionKey)}`,
 	});
-};
+});
 
-export const closeSession = async (req, res) => {
+export const closeSession = requestHandler(async (req, res) => {
 	const { sessionKey } = req.keys;
 	await sessionService.closeSession(sessionKey);
 
@@ -62,4 +63,4 @@ export const closeSession = async (req, res) => {
 			sessionKey
 		)} has been closed and is no longer valid.`,
 	});
-};
+});
