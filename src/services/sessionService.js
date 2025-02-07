@@ -25,14 +25,8 @@ export const sendMessage = async (sessionKey, message) => {
 };
 
 export const leaveSession = async (sessionKey, userKey) => {
-	try {
-		await cache.removeUser({ sessionKey, userKey });
-
-		await unsubscribe(sessionKey);
-	} catch (error) {
-		console.error(`User ${userId} could not leave session ${sessionKey}.`);
-		throw error;
-	}
+	await cache.removeUser({ sessionKey, userKey });
+	await unsubscribe(sessionKey);
 };
 
 export const closeSession = async (sessionKey) => {
