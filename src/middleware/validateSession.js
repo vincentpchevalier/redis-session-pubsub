@@ -1,4 +1,5 @@
 import { cacheClient } from '../services/cache.js';
+import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import { generateKeys } from '../utils/keys.js';
 
 export const validateSession = async (req, res, next) => {
@@ -6,8 +7,7 @@ export const validateSession = async (req, res, next) => {
 		const { code, userId } = req.body;
 
 		if (!userId || !code) {
-			res.status(400).json({ error: 'Missing userId or code.' });
-			return;
+			throw new BadRequestError('Missing userId or code.');
 		}
 
 		const { sessionKey, userKey } = generateKeys(code, userId);
@@ -15,7 +15,7 @@ export const validateSession = async (req, res, next) => {
 		const inCache = await cacheClient.exists(sessionKey);
 
 		if (!inCache) {
-			return res.status(400).json({ error: 'Invalid session code.' });
+			throw new NotFoundError('Session not found.');
 		}
 
 		req.keys = { sessionKey, userKey };
