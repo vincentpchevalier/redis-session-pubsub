@@ -56,6 +56,19 @@ export const subscribe = async (userId, sessionId) => {
 	}
 };
 
+export const publish = async (sessionId, message) => {
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.');
+
+	try {
+		await checkRedisConnection();
+
+		await pubClient.publish(sessionId, JSON.stringify(message));
+	} catch (error) {
+		throw new ServiceError('Unable to publish message.');
+	}
+};
+
 export const unsubscribe = async (sessionId) => {
 	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
 
@@ -67,19 +80,6 @@ export const unsubscribe = async (sessionId) => {
 		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
 		console.error(`Something went wrong when unsubscribing: ${error.message}`);
-		throw error;
-	}
-};
-
-export const publish = async (sessionId, message) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
-
-	try {
-		await checkRedisConnection();
-
-		await pubClient.publish(sessionId, JSON.stringify(message));
-	} catch (error) {
-		console.error(`Error occurred when publishing to client: ${error.message}`);
 		throw error;
 	}
 };
