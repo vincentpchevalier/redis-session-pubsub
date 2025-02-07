@@ -1,6 +1,5 @@
 export class APIError extends Error {
 	status = 500;
-
 	constructor(message) {
 		super(message);
 
@@ -22,6 +21,10 @@ export class ForbiddenError extends APIError {
 
 export class NotFoundError extends APIError {
 	status = 404;
+}
+
+export class ServiceError extends APIError {
+	status = 500;
 }
 
 export const errorHandler = (error, _req, res, _next) => {
