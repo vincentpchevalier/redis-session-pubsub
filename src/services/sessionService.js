@@ -4,20 +4,13 @@ import { generateKeys, parseKey } from '../utils/keys.js';
 import { generateCode } from '../utils/generateCode.js';
 
 export const createSession = async (userId) => {
-	try {
-		const code = await generateCode();
-		const keys = generateKeys(code, userId);
+	const code = await generateCode();
+	const keys = generateKeys(code, userId);
 
-		await cache.createSession(keys);
-		await subscribe(userId, keys.sessionKey);
+	await cache.createSession(keys);
+	await subscribe(userId, keys.sessionKey);
 
-		return code;
-	} catch (error) {
-		console.error(
-			`Unable to start session for user ${userId} due to: ${error.message}.`
-		);
-		throw error;
-	}
+	return code;
 };
 
 export const joinSession = async (sessionKey, userKey) => {
