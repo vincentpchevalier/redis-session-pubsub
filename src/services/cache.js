@@ -1,5 +1,6 @@
 import redis from 'redis';
 import { parseKey } from '../utils/keys.js';
+import { ForbiddenError, ServiceError } from '../utils/errors.js';
 
 let cacheClient;
 
@@ -32,7 +33,9 @@ export const addUser = async ({ sessionKey, userKey }) => {
 		const userCount = await cacheClient.sCard(sessionKey);
 
 		if (userCount >= 2)
-			throw new Error(`Session ${sessionId} is already full with 2 members.`);
+			throw new ForbiddenError(
+				`Session ${sessionId} is already full with 2 members.`
+			);
 
 		await cacheClient.sAdd(sessionKey, userKey);
 		await cacheClient.expire(sessionKey, process.env.TTL_EXPIRATION);
@@ -43,8 +46,7 @@ export const addUser = async ({ sessionKey, userKey }) => {
 
 		return true;
 	} catch (error) {
-		console.error(`Unable to add user ${userId}: ${error.message}`);
-		throw error;
+		throw new ServiceError('Unable to add user to session.');
 	}
 };
 
