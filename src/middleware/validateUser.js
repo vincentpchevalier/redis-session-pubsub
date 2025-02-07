@@ -1,4 +1,5 @@
 import { cacheClient } from '../services/cache.js';
+import { BadRequestError, ForbiddenError } from '../utils/errors.js';
 import { parseKey } from '../utils/keys.js';
 
 export const validateUser = async (req, res, next) => {
@@ -6,18 +7,13 @@ export const validateUser = async (req, res, next) => {
 		const { sessionKey, userKey } = req.keys;
 
 		if (!sessionKey || !userKey) {
-			return res.status(400).json({ error: 'Missing sessionKey or userKey.' });
+			throw new BadRequestError('Missing session key or user key.');
 		}
-
-		const sessionCode = parseKey(sessionKey);
-		const username = parseKey(userKey);
 
 		const isMember = await cacheClient.sIsMember(sessionKey, userKey);
 
 		if (!isMember) {
-			return res.status(403).json({
-				error: `${username} is not a member of session ${sessionCode}.`,
-			});
+			throw new ForbiddenError('You do not have access to this session.');
 		}
 
 		next();
