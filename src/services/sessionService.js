@@ -5,14 +5,10 @@ import { generateCode } from '../utils/generateCode.js';
 
 export const createSession = async (userId) => {
 	try {
-		let isCached;
-		const code = generateCode();
+		const code = await generateCode();
 		const keys = generateKeys(code, userId);
 
-		while (!isCached) {
-			isCached = await cache.createSession(keys);
-		}
-
+		await cache.createSession(keys);
 		await subscribe(userId, keys.sessionKey);
 
 		return code;
