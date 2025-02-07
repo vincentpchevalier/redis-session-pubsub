@@ -30,15 +30,10 @@ export const leaveSession = async (sessionKey, userKey) => {
 };
 
 export const closeSession = async (sessionKey) => {
-	try {
-		await sendMessage(
-			sessionKey,
-			`Session ${parseKey(sessionKey)} has been closed and is no longer valid.`
-		);
-		await cache.deleteSession(sessionKey);
-		await disconnect();
-	} catch (error) {
-		console.error(`Unable to close session.`);
-		throw error;
-	}
+	await sendMessage(
+		sessionKey,
+		`Session ${parseKey(sessionKey)} has been closed and is no longer valid.`
+	);
+	await cache.deleteSession(sessionKey);
+	await disconnect();
 };
