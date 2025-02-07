@@ -21,12 +21,7 @@ export const joinSession = async (sessionKey, userKey) => {
 };
 
 export const sendMessage = async (sessionKey, message) => {
-	try {
-		await publish(sessionKey, message);
-	} catch (error) {
-		console.error(`Unable to send message.`);
-		throw error;
-	}
+	await publish(sessionKey, message);
 };
 
 export const leaveSession = async (sessionKey, userKey) => {
