@@ -36,9 +36,7 @@ export const addUser = async ({ sessionKey, userKey }) => {
 		const userCount = await cacheClient.sCard(sessionKey);
 
 		if (userCount >= 2)
-			throw new ForbiddenError(
-				`Session ${sessionId} is already full with 2 members.`
-			);
+			throw new ForbiddenError(`Session is already full with 2 members.`);
 
 		await cacheClient.sAdd(sessionKey, userKey);
 		await cacheClient.expire(sessionKey, process.env.TTL_EXPIRATION);
@@ -49,6 +47,8 @@ export const addUser = async ({ sessionKey, userKey }) => {
 
 		return true;
 	} catch (error) {
+		if (error instanceof ForbiddenError) throw error;
+
 		throw new ServiceError('Unable to add user to session.', {
 			cause: error,
 		});
