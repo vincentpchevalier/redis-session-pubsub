@@ -18,7 +18,7 @@ export const init = async () => {
 export const createSession = async ({ sessionKey, userKey }) => {
 	try {
 		await cacheClient.sAdd(sessionKey, userKey);
-		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
+		await cacheClient.expire(sessionKey, process.env.TTL_EXPIRATION);
 
 		return true;
 	} catch (error) {
@@ -36,10 +36,10 @@ export const addUser = async ({ sessionKey, userKey }) => {
 			throw new Error(`Session ${sessionId} is already full with 2 members.`);
 
 		await cacheClient.sAdd(sessionKey, userKey);
-		await cacheClient.expire(sessionKey, process.env.SESSION_EXPIRATION);
+		await cacheClient.expire(sessionKey, process.env.TTL_EXPIRATION);
 
 		console.log(
-			`${userKey} added to ${sessionKey}. Expiration in ${process.env.SESSION_EXPIRATION} seconds.`
+			`${userKey} added to ${sessionKey}. Expiration in ${process.env.TTL_EXPIRATION} seconds.`
 		);
 
 		return true;
