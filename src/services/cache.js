@@ -54,8 +54,9 @@ export const removeUser = async ({ sessionKey, userKey }) => {
 	try {
 		await cacheClient.sRem(sessionKey, userKey);
 	} catch (error) {
-		console.error(`Unable to find user ${parseKey(userKey)}: ${error.message}`);
-		throw error;
+		throw new ServiceError(
+			'There was a problem removing user from the session.'
+		);
 	}
 };
 
