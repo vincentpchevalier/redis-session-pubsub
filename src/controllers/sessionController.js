@@ -11,7 +11,11 @@ export const createSession = async (req, res) => {
 
 	const code = await sessionService.createSession(userId);
 
-	res.status(201).json({ status: 'success', data: { code } });
+	res.status(201).json({
+		success: true,
+		message: `Session created.`,
+		data: { code },
+	});
 };
 
 export const joinSession = async (req, res) => {
@@ -19,7 +23,10 @@ export const joinSession = async (req, res) => {
 
 	await sessionService.joinSession(sessionKey, userKey);
 
-	res.status(200).json({ status: 'joined' });
+	res.status(200).json({
+		success: true,
+		message: `${parseKey(userKey)} joined session ${parseKey(sessionKey)}`,
+	});
 };
 
 export const sendMessage = async (req, res) => {
@@ -32,7 +39,7 @@ export const sendMessage = async (req, res) => {
 
 	await sessionService.sendMessage(sessionKey, message);
 
-	res.status(200).json({ status: 'sent' });
+	res.status(200).json({ success: true, message: 'Message sent.' });
 };
 
 export const leaveSession = async (req, res) => {
@@ -40,7 +47,8 @@ export const leaveSession = async (req, res) => {
 
 	await sessionService.leaveSession(sessionKey, userKey);
 	res.status(200).json({
-		status: `${parseKey(userKey)} left session ${parseKey(sessionKey)}`,
+		success: true,
+		message: `${parseKey(userKey)} left session ${parseKey(sessionKey)}`,
 	});
 };
 
@@ -49,7 +57,8 @@ export const closeSession = async (req, res) => {
 	await sessionService.closeSession(sessionKey);
 
 	res.status(200).json({
-		status: `Session ${parseKey(
+		success: true,
+		message: `Session ${parseKey(
 			sessionKey
 		)} has been closed and is no longer valid.`,
 	});
