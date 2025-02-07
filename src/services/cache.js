@@ -10,10 +10,11 @@ export const init = async () => {
 			url: process.env.REDIS_URL,
 		})
 		.on('error', (error) => {
-			console.error('Redis Cache Client Error', error);
+			throw new ServiceError('Unable to connect to Redis.', {
+				cause: error,
+			});
 		})
 		.connect();
-	console.log('Redis cache set up.');
 };
 
 export const createSession = async ({ sessionKey, userKey }) => {
@@ -23,7 +24,9 @@ export const createSession = async ({ sessionKey, userKey }) => {
 
 		return true;
 	} catch (error) {
-		throw new ServiceError('Unable to create session.');
+		throw new ServiceError('Unable to create session.', {
+			cause: error,
+		});
 	}
 };
 
@@ -46,7 +49,9 @@ export const addUser = async ({ sessionKey, userKey }) => {
 
 		return true;
 	} catch (error) {
-		throw new ServiceError('Unable to add user to session.');
+		throw new ServiceError('Unable to add user to session.', {
+			cause: error,
+		});
 	}
 };
 
@@ -55,7 +60,10 @@ export const removeUser = async ({ sessionKey, userKey }) => {
 		await cacheClient.sRem(sessionKey, userKey);
 	} catch (error) {
 		throw new ServiceError(
-			'There was a problem removing user from the session.'
+			'There was a problem removing user from the session.',
+			{
+				cause: error,
+			}
 		);
 	}
 };
@@ -64,7 +72,9 @@ export const deleteSession = async (sessionKey) => {
 	try {
 		await cacheClient.del(sessionKey);
 	} catch (error) {
-		throw new ServiceError('Unable to close session.');
+		throw new ServiceError('Unable to close session.', {
+			cause: error,
+		});
 	}
 };
 

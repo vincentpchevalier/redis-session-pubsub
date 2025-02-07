@@ -37,8 +37,9 @@ const checkRedisConnection = async () => {
 			await subClient.connect();
 		}
 	} catch (error) {
-		console.error('Unable to connect to Redis:', error);
-		throw error;
+		throw new ServiceError('Unable to connect to Redis.', {
+			cause: error,
+		});
 	}
 };
 
