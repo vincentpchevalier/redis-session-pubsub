@@ -64,9 +64,7 @@ export const deleteSession = async (sessionKey) => {
 	try {
 		await cacheClient.del(sessionKey);
 	} catch (error) {
-		console.error(
-			`Unable to delete session ${parseKey(sessionKey)}: ${error.message}`
-		);
+		throw new ServiceError('Unable to close session.');
 	}
 };
 
