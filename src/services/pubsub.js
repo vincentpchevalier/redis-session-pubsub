@@ -1,6 +1,6 @@
 import redis from 'redis';
 
-import { ServiceError } from '../utils/errors';
+import { ServiceError } from '../utils/errors.js';
 
 let pubClient;
 let subClient;
