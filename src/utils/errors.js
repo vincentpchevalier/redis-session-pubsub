@@ -1,7 +1,8 @@
 export class APIError extends Error {
-	status = 500;
-	constructor(message) {
+	constructor(message, status = 500, cause = null) {
 		super(message);
+		this.status = status;
+		this.cause = cause;
 
 		Error.captureStackTrace(this, this.constructor);
 	}
@@ -24,7 +25,9 @@ export class NotFoundError extends APIError {
 }
 
 export class ServiceError extends APIError {
-	status = 500;
+	constructor(message, cause = null) {
+		super(message, 500, cause);
+	}
 }
 
 export const errorHandler = (error, _req, res, _next) => {
