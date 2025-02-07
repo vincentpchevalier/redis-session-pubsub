@@ -44,7 +44,9 @@ const checkRedisConnection = async () => {
 
 export const subscribe = async (userId, sessionId) => {
 	if (typeof sessionId !== 'string')
-		throw new ServiceError('Invalid type: Expected string.');
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
 
 	try {
 		await checkRedisConnection();
@@ -52,26 +54,34 @@ export const subscribe = async (userId, sessionId) => {
 			console.log(`User ${userId} received message: ${message}`);
 		});
 	} catch (error) {
-		throw new ServiceError('Unable to subscribe to session.');
+		throw new ServiceError('Unable to subscribe to session.', {
+			cause: error,
+		});
 	}
 };
 
 export const publish = async (sessionId, message) => {
 	if (typeof sessionId !== 'string')
-		throw new ServiceError('Invalid type: Expected string.');
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
 
 	try {
 		await checkRedisConnection();
 
 		await pubClient.publish(sessionId, JSON.stringify(message));
 	} catch (error) {
-		throw new ServiceError('Unable to publish message.');
+		throw new ServiceError('Unable to publish message.', {
+			cause: error,
+		});
 	}
 };
 
 export const unsubscribe = async (sessionId) => {
 	if (typeof sessionId !== 'string')
-		throw new ServiceError('Invalid type: Expected string.');
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
 
 	try {
 		await checkRedisConnection();
@@ -80,7 +90,9 @@ export const unsubscribe = async (sessionId) => {
 
 		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
-		throw new ServiceError('There was a problem unsubscribing from session.');
+		throw new ServiceError('There was a problem unsubscribing from session.', {
+			cause: error,
+		});
 	}
 };
 
