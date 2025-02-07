@@ -42,7 +42,8 @@ const checkRedisConnection = async () => {
 };
 
 export const subscribe = async (userId, sessionId) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.');
 
 	try {
 		await checkRedisConnection();
@@ -50,8 +51,7 @@ export const subscribe = async (userId, sessionId) => {
 			console.log(`User ${userId} received message: ${message}`);
 		});
 	} catch (error) {
-		console.error(`Failed to subscribe to session: ${error.message}`);
-		throw error;
+		throw new ServiceError('Unable to subscribe to session.');
 	}
 };
 
