@@ -70,7 +70,8 @@ export const publish = async (sessionId, message) => {
 };
 
 export const unsubscribe = async (sessionId) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.');
 
 	try {
 		await checkRedisConnection();
@@ -79,8 +80,7 @@ export const unsubscribe = async (sessionId) => {
 
 		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
-		console.error(`Something went wrong when unsubscribing: ${error.message}`);
-		throw error;
+		throw new ServiceError('There was a problem unsubscribing from session.');
 	}
 };
 
