@@ -1,5 +1,7 @@
 import redis from 'redis';
 
+import { ServiceError } from '../utils/errors.js';
+
 let pubClient;
 let subClient;
 
@@ -36,13 +38,17 @@ const checkRedisConnection = async () => {
 			await subClient.connect();
 		}
 	} catch (error) {
-		console.error('Unable to connect to Redis:', error);
-		throw error;
+		throw new ServiceError('Unable to connect to Redis.', {
+			cause: error,
+		});
 	}
 };
 
 export const subscribe = async (userId, sessionId) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
 
 	try {
 		await checkRedisConnection();
@@ -50,13 +56,34 @@ export const subscribe = async (userId, sessionId) => {
 			console.log(`User ${userId} received message: ${message}`);
 		});
 	} catch (error) {
-		console.error(`Failed to subscribe to session: ${error.message}`);
-		throw error;
+		throw new ServiceError('Unable to subscribe to session.', {
+			cause: error,
+		});
+	}
+};
+
+export const publish = async (sessionId, message) => {
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
+
+	try {
+		await checkRedisConnection();
+
+		await pubClient.publish(sessionId, JSON.stringify(message));
+	} catch (error) {
+		throw new ServiceError('Unable to publish message.', {
+			cause: error,
+		});
 	}
 };
 
 export const unsubscribe = async (sessionId) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
+	if (typeof sessionId !== 'string')
+		throw new ServiceError('Invalid type: Expected string.', {
+			cause: error,
+		});
 
 	try {
 		await checkRedisConnection();
@@ -65,21 +92,9 @@ export const unsubscribe = async (sessionId) => {
 
 		console.log(`Unsubscribing from session ${sessionId}`);
 	} catch (error) {
-		console.error(`Something went wrong when unsubscribing: ${error.message}`);
-		throw error;
-	}
-};
-
-export const publish = async (sessionId, message) => {
-	if (typeof sessionId !== 'string') throw new Error('Invalid sessionId.');
-
-	try {
-		await checkRedisConnection();
-
-		await pubClient.publish(sessionId, JSON.stringify(message));
-	} catch (error) {
-		console.error(`Error occurred when publishing to client: ${error.message}`);
-		throw error;
+		throw new ServiceError('There was a problem unsubscribing from session.', {
+			cause: error,
+		});
 	}
 };
 

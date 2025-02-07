@@ -4,69 +4,36 @@ import { generateKeys, parseKey } from '../utils/keys.js';
 import { generateCode } from '../utils/generateCode.js';
 
 export const createSession = async (userId) => {
-	try {
-		const code = await generateCode();
-		const keys = generateKeys(code, userId);
+	const code = await generateCode();
+	const keys = generateKeys(code, userId);
 
-		await cache.createSession(keys);
-		await subscribe(userId, keys.sessionKey);
+	await cache.createSession(keys);
+	await subscribe(userId, keys.sessionKey);
 
-		return code;
-	} catch (error) {
-		console.error(
-			`Unable to start session for user ${userId} due to: ${error.message}.`
-		);
-		throw error;
-	}
+	return code;
 };
 
 export const joinSession = async (sessionKey, userKey) => {
-	try {
-		await cache.addUser({ sessionKey, userKey });
+	const username = parseKey(userKey);
 
-		const username = parseKey(userKey);
-
-		await subscribe(username, sessionKey);
-	} catch (error) {
-		console.error(
-			`User ${username} unable to join session ${parseKey(
-				sessionKey
-			)} due to: ${error.message}.`
-		);
-		throw error;
-	}
+	await cache.addUser({ sessionKey, userKey });
+	await subscribe(username, sessionKey);
 };
 
 export const sendMessage = async (sessionKey, message) => {
-	try {
-		await publish(sessionKey, message);
-	} catch (error) {
-		console.error(`Unable to send message.`);
-		throw error;
-	}
+	await publish(sessionKey, message);
 };
 
 export const leaveSession = async (sessionKey, userKey) => {
-	try {
-		await cache.removeUser({ sessionKey, userKey });
-
-		await unsubscribe(sessionKey);
-	} catch (error) {
-		console.error(`User ${userId} could not leave session ${sessionKey}.`);
-		throw error;
-	}
+	await cache.removeUser({ sessionKey, userKey });
+	await unsubscribe(sessionKey);
 };
 
 export const closeSession = async (sessionKey) => {
-	try {
-		await sendMessage(
-			sessionKey,
-			`Session ${parseKey(sessionKey)} has been closed and is no longer valid.`
-		);
-		await cache.deleteSession(sessionKey);
-		await disconnect();
-	} catch (error) {
-		console.error(`Unable to close session.`);
-		throw error;
-	}
+	await sendMessage(
+		sessionKey,
+		`Session ${parseKey(sessionKey)} has been closed and is no longer valid.`
+	);
+	await cache.deleteSession(sessionKey);
+	await disconnect();
 };
