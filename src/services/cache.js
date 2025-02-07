@@ -22,8 +22,7 @@ export const createSession = async ({ sessionKey, userKey }) => {
 
 		return true;
 	} catch (error) {
-		console.error(`Unable to create session: ${error.message}`);
-		throw error;
+		throw new ServiceError('Unable to create session.');
 	}
 };
 
