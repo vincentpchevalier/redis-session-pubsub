@@ -14,20 +14,10 @@ export const createSession = async (userId) => {
 };
 
 export const joinSession = async (sessionKey, userKey) => {
-	try {
-		await cache.addUser({ sessionKey, userKey });
+	const username = parseKey(userKey);
 
-		const username = parseKey(userKey);
-
-		await subscribe(username, sessionKey);
-	} catch (error) {
-		console.error(
-			`User ${username} unable to join session ${parseKey(
-				sessionKey
-			)} due to: ${error.message}.`
-		);
-		throw error;
-	}
+	await cache.addUser({ sessionKey, userKey });
+	await subscribe(username, sessionKey);
 };
 
 export const sendMessage = async (sessionKey, message) => {
