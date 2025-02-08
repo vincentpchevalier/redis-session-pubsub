@@ -1,4 +1,4 @@
-import * as sessionService from '../services/sessionService.js';
+import * as sessionService from '../services/session.service.js';
 import { BadRequestError } from '../utils/errors.js';
 import { parseKey } from '../utils/keys.js';
 import requestHandler from '../utils/requestHandler.js';

@@ -97,7 +97,7 @@ APP_PORT=3000 npm start
 APP_PORT=4000 npm start
 ```
 
-Each server will log its listening port and operate independently, sharing the same Redis instance.
+Each server will log its listening port and operate independently. Both servers connect to the same Redis server instance but set up separate Redis clients to publish and subscribe to channels.
 
 ## API Endpoints
 
