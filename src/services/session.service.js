@@ -1,4 +1,4 @@
-import * as pubsub from './pubsub.js';
+import * as pubsub from './pubsub.service.js';
 import * as cache from './cache.service.js';
 
 import { generateKeys, parseKey } from '../utils/keys.js';

@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 
 import * as cache from './services/cache.service.js';
-import * as pubSub from './services/pubsub.js';
+import * as pubSub from './services/pubsub.service.js';
 import sessionRouter from './routers/session.router.js';
 import { errorHandler } from './utils/errors.js';
 
