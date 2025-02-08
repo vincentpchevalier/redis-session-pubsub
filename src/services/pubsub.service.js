@@ -1,26 +1,6 @@
-import redis from 'redis';
+import { pubClient, subClient } from './redis.service.js';
 
 import { ServiceError } from '../utils/errors.js';
-
-let pubClient;
-let subClient;
-
-export const init = async () => {
-	console.log('Connecting to Redis...');
-	pubClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (err) => console.error('Redis Publisher Error', err))
-		.connect();
-
-	subClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (err) => console.error('Redis Subscriber Error', err))
-		.connect();
-};
 
 // "private"
 const checkRedisConnection = async () => {
