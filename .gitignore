@@ -1,4 +1,7 @@
 .DS_Store
-/node_modules
-plan.txt
+node_modules/
 .env
+logs/
+
+*.txt
+
