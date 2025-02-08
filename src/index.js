@@ -2,8 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import morgan from 'morgan';
 
-import * as cache from './services/cache.service.js';
-import * as pubSub from './services/pubsub.service.js';
+import { initializeRedis } from './services/index.js';
 import sessionRouter from './routers/session.router.js';
 import { errorHandler } from './utils/errors.js';
 
@@ -14,8 +13,7 @@ app.use(morgan('tiny'));
 app.use(express.json());
 
 // redis setup
-await cache.init();
-await pubSub.init();
+initializeRedis();
 
 // routes
 app.get('/', (_req, res) => res.send('Server is running 👋'));

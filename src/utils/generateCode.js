@@ -1,4 +1,4 @@
-import { cacheClient } from '../services/cache.service.js';
+import { cacheClient } from '../services/index.js';
 
 export const generateCode = async () => {
 	let code;
