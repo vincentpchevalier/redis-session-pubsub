@@ -1,4 +1,4 @@
-import { cacheClient } from '../services/cache.js';
+import { cacheClient } from '../services/index.js';
 import { BadRequestError, NotFoundError } from '../utils/errors.js';
 import { generateKeys } from '../utils/keys.js';
 

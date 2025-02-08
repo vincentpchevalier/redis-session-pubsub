@@ -1,21 +1,6 @@
-import redis from 'redis';
+import { cacheClient } from './index.js';
 
 import { ForbiddenError, ServiceError } from '../utils/errors.js';
-
-let cacheClient;
-
-export const init = async () => {
-	cacheClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (error) => {
-			throw new ServiceError('Unable to connect to Redis.', {
-				cause: error,
-			});
-		})
-		.connect();
-};
 
 export const createSession = async ({ sessionKey, userKey }) => {
 	try {
@@ -77,5 +62,3 @@ export const deleteSession = async (sessionKey) => {
 		});
 	}
 };
-
-export { cacheClient };
