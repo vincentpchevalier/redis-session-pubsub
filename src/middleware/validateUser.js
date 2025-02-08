@@ -1,4 +1,4 @@
-import { cacheClient } from '../services/cache.js';
+import { cacheClient } from '../services/cache.service.js';
 import { BadRequestError, ForbiddenError } from '../utils/errors.js';
 import { parseKey } from '../utils/keys.js';
 

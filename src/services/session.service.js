@@ -1,5 +1,5 @@
 import * as pubsub from './pubsub.js';
-import * as cache from './cache.js';
+import * as cache from './cache.service.js';
 
 import { generateKeys, parseKey } from '../utils/keys.js';
 import { generateCode } from '../utils/generateCode.js';
