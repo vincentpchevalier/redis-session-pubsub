@@ -3,7 +3,7 @@ import express from 'express';
 import morgan from 'morgan';
 
 import * as cache from './services/cache.js';
-import redisPubSub from './services/pubsub.js';
+import * as pubSub from './services/pubsub.js';
 import sessionRouter from './router/sessionRouter.js';
 import { errorHandler } from './utils/errors.js';
 
@@ -14,8 +14,8 @@ app.use(morgan('tiny'));
 app.use(express.json());
 
 // redis setup
-cache.init();
-redisPubSub();
+await cache.init();
+await pubSub.init();
 
 // routes
 app.get('/', (_req, res) => res.send('Server is running 👋'));
