@@ -1,5 +1,7 @@
 import redis from 'redis';
 
+import { ServiceError } from '../utils/errors.js';
+
 let cacheClient;
 let pubClient;
 let subClient;
@@ -7,31 +9,30 @@ let subClient;
 export const initializeRedis = async () => {
 	console.log('Connecting to Redis...');
 	console.log('Creating clients...');
+	try {
+		const url = process.env.REDIS_URL;
 
-	cacheClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (error) => {
-			throw new ServiceError('Unable to connect to Redis.', {
-				cause: error,
-			});
-		})
-		.connect();
+		cacheClient = redis.createClient({ url });
+		await cacheClient.connect();
+		console.log('Cache client connected.');
 
-	pubClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (err) => console.error('Redis Publisher Error', err))
-		.connect();
+		pubClient = redis.createClient({ url });
+		await pubClient.connect();
+		console.log('Publisher client connected.');
 
-	subClient = await redis
-		.createClient({
-			url: process.env.REDIS_URL,
-		})
-		.on('error', (err) => console.error('Redis Subscriber Error', err))
-		.connect();
+		subClient = redis.createClient({ url });
+		await subClient.connect();
+		console.log('Subscriber client connected.');
+
+		console.log('All Redis clients connected successfully.');
+	} catch (error) {
+		console.error('Redis initialization error:', error);
+		throw new ServiceError('Unable to connect to Redis.', {
+			cause: error,
+		});
+	} finally {
+		console.log('Redis initialization process complete.');
+	}
 };
 
 export { cacheClient, pubClient, subClient };
