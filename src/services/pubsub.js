@@ -5,7 +5,7 @@ import { ServiceError } from '../utils/errors.js';
 let pubClient;
 let subClient;
 
-const init = async () => {
+export const init = async () => {
 	console.log('Connecting to Redis...');
 	pubClient = await redis
 		.createClient({
@@ -113,5 +113,3 @@ export const disconnect = async () => {
 
 	console.log('Disconnected from Redis.');
 };
-
-export default init;
