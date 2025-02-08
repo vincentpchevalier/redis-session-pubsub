@@ -4,7 +4,7 @@ import morgan from 'morgan';
 
 import * as cache from './services/cache.js';
 import * as pubSub from './services/pubsub.js';
-import sessionRouter from './router/sessionRouter.js';
+import sessionRouter from './routers/session.router.js';
 import { errorHandler } from './utils/errors.js';
 
 const app = express();
