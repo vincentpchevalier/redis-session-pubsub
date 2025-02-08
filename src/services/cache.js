@@ -2,7 +2,7 @@ import redis from 'redis';
 
 import { ForbiddenError, ServiceError } from '../utils/errors.js';
 
-let cacheClient;
+export let cacheClient;
 
 export const init = async () => {
 	cacheClient = await redis
@@ -77,5 +77,3 @@ export const deleteSession = async (sessionKey) => {
 		});
 	}
 };
-
-export { cacheClient };
