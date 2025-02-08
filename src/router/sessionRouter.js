@@ -7,7 +7,7 @@ import {
 	leaveSession,
 	sendMessage,
 	closeSession,
-} from '../controllers/sessionController.js';
+} from '../controllers/session.controller.js';
 
 const sessionRouter = Router();
 
