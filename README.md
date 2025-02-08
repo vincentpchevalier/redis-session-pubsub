@@ -2,14 +2,14 @@
 
 ## Overview
 
-This project showcases lightweight, scalable session management with Redis Sets and Pub/Sub, enabling real-time communication in session-based applications. Key features include session creation, messaging, and real-time updates, leveraging Redis for efficient data handling and seamless Pub/Sub integration.
+This project showcases lightweight, scalable session management with Redis Sets and Pub/Sub, enabling real-time communication in session-based applications. Built with Express, the application provides robust CRUD operations for session and user management. Once a session is created and joined, Pub/Sub enables real-time updates and messaging between users. The project leverages Redis for efficient data handling, with future plans to transition toward WebSockets for event-driven updates.
 
 ## Features
 
 - Lightweight, scalable session management using Redis Sets and Pub/Sub integration.
-- Ability to create and join sessions seamlessly.
-- Basic session authentication with unique codes and user IDs.
-- Real-time messaging between users through Pub/Sub synchronization.
+- Built with Express to provide RESTful CRUD operations for session and user management.
+- Ability to create and join sessions with unique codes and user IDs, providing basic session authentication.
+- Real-time messaging between users within sessions, powered through Pub/Sub synchronization.
 - Efficient tracking of sessions and users using Redis Sets, key patterns, and expiration policies.
 - Error handling middleware and custom error classes.
 
