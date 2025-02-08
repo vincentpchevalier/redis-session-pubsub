@@ -39,6 +39,14 @@ The application uses Redis to manage session and user data with the following st
 - Node.js (v18 or higher)
 - Redis (local or cloud-based)
 
+### Dependencies
+
+- **express:** web framework for building the API
+- **redis:** redis client for data storage and communication
+- **dotenv:** environment variable management
+- **morgan:** HTTP request logger
+- **nodemon (dev dependency):** live reload for development
+
 ### Installation
 
 1. Clone the repository:
