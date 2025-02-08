@@ -9,22 +9,24 @@ import { errorHandler } from './utils/errors.js';
 
 const app = express();
 
+// middleware
 app.use(morgan('tiny'));
 app.use(express.json());
 
+// redis setup
 cache.init();
 redisPubSub();
 
+// routes
 app.get('/', (_req, res) => res.send('Server is running 👋'));
-
 app.use('/session', sessionRouter);
 
+// error handler
 app.use(errorHandler);
 
-// break into two server files for development
-// const port = process.env.PORT || 3000;
-// app.listen(port, () => {
-// 	console.log(`App listening on port:${port}`);
-// });
+const port = process.env.APP_PORT || 3000;
+app.listen(port, () => {
+	console.log(`App listening on port:${port}`);
+});
 
 export default app;
